@@ -205,8 +205,8 @@ def encrypt_text(text: str, password: str):
     key = create_bitarray()
     key.frombytes(password.encode('utf-8'))
 
-    if len(data) % 64 == 0:
-        data.extend((64 - len(data)) * [False])
+    if len(data) % 64 != 0:
+        data.extend((64 - len(data) % 64) * [False])
 
     if len(key) < 56:
         key.extend((56 - len(key)) * [False])
@@ -234,8 +234,8 @@ def decrypt_text(encrypted_bytes: bytes, password: str):
     final = create_bitarray()
 
     for i in range(len(data) // 64):
-        final.extend(encrypt(data[i * 64: (i + 1) * 64], r_keys))
-    return final.tobytes()
+        final.extend(decrypt(data[i * 64: (i + 1) * 64], r_keys))
+    return final.tobytes().decode('utf-8')
 
 text = 'KEKISTAN WILL WIN THE BATTLE'
 password = 'KEKEKEKEKEKEKEKEKEK'
